@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Butlers — Operations Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a; --surface: #1a1712; --surface-raised: #242018;
+    --border: #332d24; --text: #c4bcb2; --text-dim: #8a8076; --text-bright: #ede6dc;
+    --accent: #c4956a; --green: #6faa5e; --red: #c4554d; --blue: #5a8fa8;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--font-body);
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 60px 40px; }
+  @media (max-width: 768px) { .container { padding: 40px 20px; } }
+
+  /* HEADER */
+  .report-header {
+    text-align: center; padding: 60px 0 40px;
+    border-bottom: 2px solid var(--border); margin-bottom: 48px;
+  }
+  .report-badge {
+    display: inline-block; background: rgba(196,149,106,0.1); color: var(--accent);
+    border: 1px solid rgba(196,149,106,0.25); padding: 5px 14px;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .report-header h1 {
+    font-family: var(--font-display); font-size: 38px; font-weight: 400; color: var(--text-bright);
+    font-style: italic; margin-bottom: 8px;
+  }
+  .report-header .meta { font-size: 12px; color: var(--text-dim); }
+  .report-header .meta span { color: var(--accent); }
+
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-title {
+    font-family: var(--font-display); font-size: 24px; color: var(--text-bright);
+    font-style: italic; margin-bottom: 4px; font-weight: 400;
+  }
+  .section-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 40px; }
+  .kpi-card {
+    background: var(--surface); padding: 28px 20px; text-align: center;
+    transition: background .2s;
+  }
+  .kpi-card:hover { background: var(--surface-raised); }
+  .kpi-value { font-family: var(--font-display); font-size: 36px; color: var(--accent); font-style: italic; }
+  .kpi-value.warn { color: var(--red); }
+  .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-top: 4px; }
+  @media (max-width: 700px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+
+  /* CHART ROW */
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  @media (max-width: 768px) { .chart-row { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border); padding: 28px;
+  }
+  .chart-card h3 { font-family: var(--font-display); font-size: 16px; color: var(--text-bright); font-style: italic; margin-bottom: 16px; font-weight: 400; }
+
+  /* BAR CHART */
+  .bar-chart { display: flex; flex-direction: column; gap: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { font-size: 11px; color: var(--text-dim); min-width: 80px; text-align: right; }
+  .bar-track { flex: 1; height: 20px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease-out; }
+  .bar-fill.red { background: linear-gradient(90deg, rgba(196,85,77,0.6), var(--red)); }
+  .bar-fill.amber { background: linear-gradient(90deg, rgba(196,149,106,0.4), var(--accent)); }
+  .bar-fill.green { background: linear-gradient(90deg, rgba(111,170,94,0.6), var(--green)); }
+  .bar-val { font-size: 11px; color: var(--text-dim); min-width: 40px; font-family: var(--font-mono); }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th {
+    text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim);
+    font-weight: 500;
+  }
+  .compare-table td { padding: 12px 14px; border-bottom: 1px solid rgba(51,45,36,0.5); }
+  .compare-table td:first-child { color: var(--text-bright); font-weight: 500; }
+  .compare-table .before-val { color: var(--red); font-weight: 600; }
+  .compare-table .after-val { color: var(--green); font-weight: 600; }
+  .compare-table .delta { font-family: var(--font-mono); font-size: 11px; }
+
+  /* SAVINGS CARD */
+  .savings-card {
+    background: linear-gradient(135deg, rgba(111,170,94,0.08), rgba(111,170,94,0.02));
+    border: 1px solid rgba(111,170,94,0.2); padding: 28px 32px; text-align: center;
+    margin-top: 40px;
+  }
+  .savings-card h2 {
+    font-family: var(--font-display); font-size: 28px; color: var(--green); font-style: italic; font-weight: 400;
+  }
+  .savings-card p { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+  /* FOOTER */
+  .report-footer {
+    text-align: center; padding: 32px 0; border-top: 1px solid var(--border);
+    margin-top: 48px; font-size: 11px; color: var(--text-dim);
+  }
+  .report-footer span { color: var(--accent); }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(16px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="report-header reveal">
+    <div class="report-badge">Operations Assessment</div>
+    <h1>Your Business, Measured.</h1>
+    <p class="meta">Prepared for <span>Coastal Dental Partners</span> · June 27, 2026 · Confidential</p>
+  </div>
+
+  <!-- HERO KPIs -->
+  <div class="kpi-row reveal">
+    <div class="kpi-card">
+      <div class="kpi-value warn">44h</div>
+      <div class="kpi-label">Avg Lead Response</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value warn">49%</div>
+      <div class="kpi-label">Late Payments</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value warn">$6.5K</div>
+      <div class="kpi-label">Monthly Support Cost</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value warn">20h</div>
+      <div class="kpi-label">Admin Hours / Week</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: Lead Response -->
+  <div class="section reveal">
+    <h2 class="section-title">1. Lead Response</h2>
+    <p class="section-sub">Industry data: leads contacted within 5 minutes are 9× more likely to convert. Your current average: 44 hours.</p>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Response Time Distribution</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">&lt;5 min</span><div class="bar-track"><div class="bar-fill green" style="width:8%"></div></div><span class="bar-val">8%</span></div>
+          <div class="bar-row"><span class="bar-label">5-30 min</span><div class="bar-track"><div class="bar-fill amber" style="width:22%"></div></div><span class="bar-val">22%</span></div>
+          <div class="bar-row"><span class="bar-label">1-4 hrs</span><div class="bar-track"><div class="bar-fill amber" style="width:35%"></div></div><span class="bar-val">35%</span></div>
+          <div class="bar-row"><span class="bar-label">24+ hrs</span><div class="bar-track"><div class="bar-fill red" style="width:35%"></div></div><span class="bar-val">35%</span></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Lead Conversion Funnel</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Inquiries</span><div class="bar-track"><div class="bar-fill amber" style="width:100%"></div></div><span class="bar-val">120/mo</span></div>
+          <div class="bar-row"><span class="bar-label">Contacted</span><div class="bar-track"><div class="bar-fill amber" style="width:70%"></div></div><span class="bar-val">84/mo</span></div>
+          <div class="bar-row"><span class="bar-label">Qualified</span><div class="bar-track"><div class="bar-fill red" style="width:28%"></div></div><span class="bar-val">34/mo</span></div>
+          <div class="bar-row"><span class="bar-label">Closed</span><div class="bar-track"><div class="bar-fill red" style="width:10%"></div></div><span class="bar-val">12/mo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Support -->
+  <div class="section reveal">
+    <h2 class="section-title">2. Customer Support</h2>
+    <p class="section-sub">Your team fields ~85 tickets/day. 65% are repeat questions that could be automated. Average first response: 10 hours.</p>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Ticket Breakdown</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Hours/Pricing</span><div class="bar-track"><div class="bar-fill amber" style="width:35%"></div></div><span class="bar-val">35%</span></div>
+          <div class="bar-row"><span class="bar-label">Booking</span><div class="bar-track"><div class="bar-fill amber" style="width:20%"></div></div><span class="bar-val">20%</span></div>
+          <div class="bar-row"><span class="bar-label">Policies</span><div class="bar-track"><div class="bar-fill amber" style="width:10%"></div></div><span class="bar-val">10%</span></div>
+          <div class="bar-row"><span class="bar-label">Complex</span><div class="bar-track"><div class="bar-fill red" style="width:35%"></div></div><span class="bar-val">35%</span></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Resolution Time</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Auto-reply</span><div class="bar-track"><div class="bar-fill green" style="width:95%"></div></div><span class="bar-val">&lt;1 min</span></div>
+          <div class="bar-row"><span class="bar-label">Simple Q</span><div class="bar-track"><div class="bar-fill amber" style="width:35%"></div></div><span class="bar-val">4.2 hr</span></div>
+          <div class="bar-row"><span class="bar-label">Complex</span><div class="bar-track"><div class="bar-fill red" style="width:18%"></div></div><span class="bar-val">18 hr</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Before / After -->
+  <div class="section reveal">
+    <h2 class="section-title">3. The Fit: Before & After</h2>
+    <p class="section-sub">If we apply our five-agent team to your operations, here's the projected shift — based on real industry benchmarks and your current metrics.</p>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Metric</th><th>Before</th><th>After (Projected)</th><th>Improvement</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lead Response Time</td>
+          <td class="before-val">44 hours</td>
+          <td class="after-val">&lt;1 second</td>
+          <td class="delta" style="color:var(--green)">↓ 99.9%</td>
+        </tr>
+        <tr>
+          <td>Leads Never Contacted</td>
+          <td class="before-val">30%</td>
+          <td class="after-val">2%</td>
+          <td class="delta" style="color:var(--green)">↓ 93%</td>
+        </tr>
+        <tr>
+          <td>Lead → Opportunity Rate</td>
+          <td class="before-val">3%</td>
+          <td class="after-val">9%</td>
+          <td class="delta" style="color:var(--green)">3× increase</td>
+        </tr>
+        <tr>
+          <td>Support First Response</td>
+          <td class="before-val">10 hours</td>
+          <td class="after-val">&lt;1 minute</td>
+          <td class="delta" style="color:var(--green)">↓ 99.8%</td>
+        </tr>
+        <tr>
+          <td>Auto-Resolution Rate</td>
+          <td class="before-val">0%</td>
+          <td class="after-val">65%</td>
+          <td class="delta" style="color:var(--green)">New capability</td>
+        </tr>
+        <tr>
+          <td>Monthly Support Cost</td>
+          <td class="before-val">$6,500</td>
+          <td class="after-val">$1,500</td>
+          <td class="delta" style="color:var(--green)">↓ 77%</td>
+        </tr>
+        <tr>
+          <td>Days to Get Paid</td>
+          <td class="before-val">38 days</td>
+          <td class="after-val">10 days</td>
+          <td class="delta" style="color:var(--green)">↓ 74%</td>
+        </tr>
+        <tr>
+          <td>Late Payment Rate</td>
+          <td class="before-val">49%</td>
+          <td class="after-val">15%</td>
+          <td class="delta" style="color:var(--green)">↓ 69%</td>
+        </tr>
+        <tr>
+          <td>Admin Hours / Week</td>
+          <td class="before-val">20 hours</td>
+          <td class="after-val">6 hours</td>
+          <td class="delta" style="color:var(--green)">↓ 70%</td>
+        </tr>
+        <tr>
+          <td>Revenue-Generating Time</td>
+          <td class="before-val">60%</td>
+          <td class="after-val">85%</td>
+          <td class="delta" style="color:var(--green)">+25 points</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="savings-card reveal">
+      <h2>Projected Annual Savings: $72,400–$94,000</h2>
+      <p>Based on labor recovery, lead conversion improvement, and late payment reduction. 500% ROI over 3 years.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Recommended Fit -->
+  <div class="section reveal">
+    <h2 class="section-title">4. Recommended Fit</h2>
+    <p class="section-sub">Based on your assessment, here's the alteration plan.</p>
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Agent Deployment</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Agent 01</span><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><span class="bar-val">Lead Response</span></div>
+          <div class="bar-row"><span class="bar-label">Agent 02</span><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><span class="bar-val">Support</span></div>
+          <div class="bar-row"><span class="bar-label">Agent 03</span><div class="bar-track"><div class="bar-fill green" style="width:85%"></div></div><span class="bar-val">Invoicing</span></div>
+          <div class="bar-row"><span class="bar-label">Agent 04</span><div class="bar-track"><div class="bar-fill green" style="width:70%"></div></div><span class="bar-val">Meeting Prep</span></div>
+          <div class="bar-row"><span class="bar-label">Agent 05</span><div class="bar-track"><div class="bar-fill amber" style="width:40%"></div></div><span class="bar-val">Intel</span></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Investment & Timeline</h3>
+        <div style="font-family:var(--font-display);font-size:32px;color:var(--accent);font-style:italic;margin-bottom:4px;">$2,500<span style="font-size:16px;color:var(--text-dim);">/mo</span></div>
+        <p style="font-size:12px;color:var(--text-dim);margin-bottom:20px;">Standard Fit — 4 agents, bi-weekly reviews, priority support</p>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Deploy</span><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div><span class="bar-val">72 hrs</span></div>
+          <div class="bar-row"><span class="bar-label">Optimize</span><div class="bar-track"><div class="bar-fill amber" style="width:60%"></div></div><span class="bar-val">2 weeks</span></div>
+          <div class="bar-row"><span class="bar-label">Full ROI</span><div class="bar-track"><div class="bar-fill amber" style="width:30%"></div></div><span class="bar-val">90 days</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-footer reveal">
+    <p>Business Butlers · <span>Bespoke AI Operations</span> · Prepared for Coastal Dental Partners</p>
+    <p style="margin-top:4px;">Sources: Oldroyd/MIT, Zendesk Benchmark, Fundbox, SCORE, McKinsey · Estimates based on industry data</p>
+  </div>
+
+</div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

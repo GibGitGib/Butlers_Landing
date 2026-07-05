@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Butlers — Terms of Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1c1814;
+    --surface: #25201b;
+    --surface-raised: #2e2822;
+    --border: #3d3630;
+    --border-stitch: #5a4f44;
+    --text: #c4bcb2;
+    --text-dim: #8a8076;
+    --text-bright: #ede6dc;
+    --accent: #c4956a;
+    --accent-soft: #a87a52;
+    --accent-glow: rgba(196,149,106,0.08);
+    --green: #7a9a6a;
+    --red-pin: #c4554d;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-detail: 'Cormorant Garamond', Garamond, serif;
+    --wool-texture: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Wool texture overlay */
+  .wool-bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: var(--wool-texture);
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+  .wool-bg::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 15% 15%, rgba(196,149,106,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 85% 70%, rgba(196,149,106,0.03) 0%, transparent 50%);
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: linear-gradient(180deg, rgba(30,26,20,0.97), rgba(28,24,20,0.93));
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--border-stitch);
+    padding: 0 48px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 20px; font-weight: 600;
+    color: var(--text-bright); font-style: italic; letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo::before {
+    content: '✂'; font-size: 16px; font-style: normal; opacity: 0.7;
+    transform: rotate(-15deg);
+  }
+  .nav-back {
+    color: var(--text-dim); text-decoration: none; font-size: 13px;
+    font-weight: 400; transition: color .2s;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  /* Content */
+  .content-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 120px 48px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-tag {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--accent); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-display); font-size: 38px; font-weight: 400;
+    color: var(--text-bright); line-height: 1.2; font-style: italic;
+  }
+
+  .page-header .effective {
+    font-size: 13px; color: var(--text-dim); margin-top: 10px; font-weight: 300;
+  }
+
+  .legal-section {
+    margin-bottom: 40px;
+  }
+
+  .legal-section h2 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 400;
+    color: var(--accent); margin-bottom: 14px; font-style: italic;
+  }
+
+  .legal-section p {
+    font-size: 14px; color: var(--text-dim); line-height: 1.75;
+    margin-bottom: 12px; font-weight: 300;
+  }
+
+  .legal-section ul {
+    margin: 0 0 16px 24px;
+    font-size: 14px; color: var(--text-dim); font-weight: 300;
+    line-height: 1.75;
+  }
+
+  .legal-section li { margin-bottom: 6px; }
+
+  .legal-section a {
+    color: var(--accent); text-decoration: none; transition: color .2s;
+  }
+  .legal-section a:hover { color: var(--accent-soft); text-decoration: underline; }
+
+  .highlight-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    outline: 1px solid var(--border-stitch);
+    outline-offset: -4px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-size: 13px; color: var(--text-dim);
+    font-weight: 300; line-height: 1.75;
+  }
+
+  .highlight-box strong {
+    color: var(--accent); font-weight: 500;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  /* Footer */
+  .footer-wrap {
+    max-width: 1080px; margin: 0 auto; padding: 56px 48px 36px;
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 36px; }
+  .footer-grid h4 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 14px; font-weight: 500; }
+  .footer-grid a { color: var(--text-dim); text-decoration: none; font-size: 12px; display: block; margin-bottom: 6px; transition: color .2s; font-weight: 300; }
+  .footer-grid a:hover { color: var(--accent); }
+  .footer-brand p { font-size: 12px; color: var(--text-dim); margin-top: 8px; line-height: 1.6; font-weight: 300; }
+  .footer-bottom { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); padding-top: 18px; border-top: 1px solid var(--border); font-weight: 300; }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 20px; }
+    .content-wrap { padding: 100px 20px 60px; }
+    .page-header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="wool-bg"></div>
+
+<nav>
+  <div class="nav-logo">Business Butlers</div>
+  <a href="index.html" class="nav-back">← Back to Business Butlers</a>
+</nav>
+
+<div class="content-wrap">
+
+  <div class="page-header">
+    <div class="page-tag">Legal</div>
+    <h1>Terms of Service</h1>
+    <p class="effective">Effective date: June 26, 2026 &nbsp;·&nbsp; Last updated: June 26, 2026</p>
+  </div>
+
+  <p style="font-size:14px; color:var(--text-dim); font-weight:300; margin-bottom:36px;">
+    These Terms of Service ("Terms") govern your use of the consulting services provided by
+    <strong style="color:var(--text-bright); font-weight:500;">Business Butlers</strong>, a service of
+    <strong style="color:var(--text-bright); font-weight:500;">CoreTech Studios</strong> ("we," "us," or "our").
+    By engaging our services, you agree to these Terms.
+  </p>
+
+  <!-- 1. Services -->
+  <div class="legal-section">
+    <h2>1. Services Provided</h2>
+    <p>Business Butlers provides AI consulting and operations services for small businesses. Our services include:</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">AI consulting</strong> — assessment of your current operations and recommendations for AI integration</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Agent deployment</strong> — configuration and deployment of AI agents tailored to specific business functions (lead response, customer support, invoicing, meeting preparation, competitor intelligence)</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Ongoing optimization</strong> — continuous monitoring, tuning, and adjustment of deployed agents to maintain performance and adapt to your changing needs</li>
+    </ul>
+    <p>All services are delivered on a consulting basis. We do not provide software-as-a-service (SaaS). Agents are configured within your existing tool stack — email, calendar, payment systems — not hosted on our infrastructure.</p>
+
+    <div class="highlight-box">
+      <strong>Nature of the relationship:</strong> We are consultants providing expertise and configuration. Results depend on your business context, existing tools, and engagement with the process. We commit to diligent effort, not specific outcomes.
+    </div>
+  </div>
+
+  <!-- 2. Payment Terms -->
+  <div class="legal-section">
+    <h2>2. Payment Terms</h2>
+    <p>Our services are billed on a monthly retainer basis unless otherwise agreed in writing.</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Monthly retainer</strong> — fees are charged at the beginning of each billing period. Current pricing tiers are published on our website and confirmed in your service agreement.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Payment processing</strong> — payments are processed through Stripe. By providing payment information, you authorize us (through Stripe) to charge the agreed amount on a recurring basis.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Late payments</strong> — invoices not paid within 15 days of the due date may result in suspension of services until payment is received.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">No long-term lock-in</strong> — we do not require annual contracts or long-term commitments. Month-to-month is standard.</li>
+    </ul>
+  </div>
+
+  <!-- 3. Cancellation -->
+  <div class="legal-section">
+    <h2>3. Cancellation &amp; Termination</h2>
+    <p><strong style="color:var(--text-bright); font-weight:500;">You may cancel anytime.</strong> Cancellation takes effect at the end of the current billing period. No early termination fees. No penalties.</p>
+    <p>To cancel:</p>
+    <ul>
+      <li>Email us at <a href="mailto:privacy@coretechlabs.app">privacy@coretechlabs.app</a> with your cancellation request</li>
+      <li>We will confirm receipt within 2 business days</li>
+      <li>Services continue through the end of the current billing period</li>
+      <li>No refunds are issued for partial months already billed</li>
+    </ul>
+
+    <p><strong style="color:var(--text-bright); font-weight:500;">We may terminate</strong> services if:</p>
+    <ul>
+      <li>You breach these Terms and do not remedy the breach within 15 days of written notice</li>
+      <li>Payment is more than 30 days past due</li>
+      <li>Continued service becomes impractical or unlawful</li>
+    </ul>
+    <p>If we terminate without cause, we will provide 30 days' written notice and refund any prepaid fees for the period beyond termination.</p>
+  </div>
+
+  <!-- 4. Limitation of Liability -->
+  <div class="legal-section">
+    <h2>4. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by applicable law:</p>
+    <ul>
+      <li>Business Butlers and CoreTech Studios shall not be liable for any <strong style="color:var(--text-bright); font-weight:500;">indirect, incidental, special, consequential, or punitive damages</strong>, including but not limited to loss of profits, data, business, or goodwill, arising from or relating to these Terms or the services provided.</li>
+      <li>Our <strong style="color:var(--text-bright); font-weight:500;">total aggregate liability</strong> for any claims arising from or relating to these Terms or the services shall not exceed the total fees paid by you to us in the 12 months preceding the claim.</li>
+      <li>We provide services on an <strong style="color:var(--text-bright); font-weight:500;">"as is" and "as available"</strong> basis. We do not warrant that services will be uninterrupted, error-free, or that they will achieve any specific business result.</li>
+    </ul>
+
+    <div class="highlight-box">
+      <strong>AI-specific disclaimer:</strong> Our services involve artificial intelligence tools. AI can produce unexpected, incorrect, or biased outputs. You are responsible for reviewing and approving any AI-generated content, decisions, or actions before they affect your business, customers, or operations.
+    </div>
+  </div>
+
+  <!-- 5. Intellectual Property -->
+  <div class="legal-section">
+    <h2>5. Intellectual Property</h2>
+    <p><strong style="color:var(--text-bright); font-weight:500;">What we own:</strong> All pre-existing materials, methodologies, configurations, code, templates, prompts, workflows, and know-how that we bring to the engagement remain our intellectual property. This includes agent configurations, prompt libraries, and operational patterns developed before or independently of your engagement.</p>
+
+    <p><strong style="color:var(--text-bright); font-weight:500;">What you own:</strong> Your business data, customer data, and any custom deliverables we create specifically for you under the engagement are yours. This includes custom agent configurations built to your specifications, integration code written for your environment, and documentation produced for your team.</p>
+
+    <p><strong style="color:var(--text-bright); font-weight:500;">License to use:</strong> For any of our intellectual property deployed in your environment as part of the services, we grant you a non-exclusive, non-transferable, revocable license to use it for the duration of the engagement. Upon termination, you must cease use of our proprietary configurations unless otherwise agreed in writing.</p>
+  </div>
+
+  <!-- 6. Confidentiality -->
+  <div class="legal-section">
+    <h2>6. Confidentiality</h2>
+    <p>Both parties agree to keep confidential any non-public information shared during the engagement. This includes business processes, financial data, customer lists, trade secrets, and any information marked as confidential.</p>
+    <p>Confidentiality obligations survive termination of these Terms for a period of 2 years. These obligations do not apply to information that is publicly available through no fault of the receiving party, independently developed, or required to be disclosed by law.</p>
+  </div>
+
+  <!-- 7. Client Responsibilities -->
+  <div class="legal-section">
+    <h2>7. Your Responsibilities</h2>
+    <p>For us to deliver services effectively, you agree to:</p>
+    <ul>
+      <li>Provide accurate and complete information about your business, tools, and processes</li>
+      <li>Grant necessary access to the systems and accounts we need to configure agents (email, calendar, payment platforms, etc.)</li>
+      <li>Designate a point of contact available for questions and decisions during the engagement</li>
+      <li>Review AI-generated outputs before they reach your customers</li>
+      <li>Comply with all applicable laws and regulations in your use of our services</li>
+    </ul>
+  </div>
+
+  <!-- 8. Indemnification -->
+  <div class="legal-section">
+    <h2>8. Indemnification</h2>
+    <p>You agree to indemnify and hold harmless Business Butlers, CoreTech Studios, and their officers, employees, and contractors from any claims, damages, losses, or expenses (including reasonable legal fees) arising from:</p>
+    <ul>
+      <li>Your use of the services in violation of these Terms</li>
+      <li>Your failure to review AI-generated outputs before using them in your business</li>
+      <li>Your violation of applicable laws or third-party rights</li>
+    </ul>
+  </div>
+
+  <!-- 9. Changes -->
+  <div class="legal-section">
+    <h2>9. Changes to These Terms</h2>
+    <p>We may update these Terms from time to time. Material changes will be communicated to active clients via email at least 30 days before they take effect. For non-material changes, the updated Terms will be posted here with a revised effective date. Continued use of services after changes take effect constitutes acceptance.</p>
+  </div>
+
+  <!-- 10. Governing Law -->
+  <div class="legal-section">
+    <h2>10. Governing Law</h2>
+    <p>These Terms are governed by the laws of the State of Delaware, without regard to its conflict of law principles. Any disputes arising from these Terms shall be resolved in the courts of Delaware.</p>
+  </div>
+
+  <hr>
+
+  <!-- 11. Contact -->
+  <div class="legal-section">
+    <h2>11. Contact</h2>
+    <p>For questions about these Terms or your engagement:</p>
+
+    <div class="highlight-box">
+      <strong>Email:</strong> <a href="mailto:privacy@coretechlabs.app">privacy@coretechlabs.app</a><br>
+      <strong>Company:</strong> CoreTech Studios<br>
+      <strong>Service:</strong> Business Butlers
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer-wrap">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">Business Butlers</div>
+      <p>Bespoke AI operations for small business.<br>Built by CoreTech Studios. © 2026</p>
+    </div>
+    <div><h4>Services</h4><a href="index.html#services">Lead Response</a><a href="index.html#services">Customer Support</a><a href="index.html#services">Invoicing</a><a href="index.html#services">Meeting Prep</a><a href="index.html#services">Competitor Intel</a></div>
+    <div><h4>Company</h4><a href="index.html#how">About</a><a href="#">Blog / Third-I</a><a href="index.html#fit">Contact</a></div>
+    <div><h4>Legal</h4><a href="cookies.html">Cookie Policy</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+  </div>
+  <div class="footer-bottom"><span>Built for small business. Backed by AI. Zero fluff.</span><span>✂ coretech-labs</span></div>
+</div>
+
+</body>
+</html>

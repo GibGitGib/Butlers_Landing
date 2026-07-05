@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Butlers — Privacy Policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1c1814;
+    --surface: #25201b;
+    --surface-raised: #2e2822;
+    --border: #3d3630;
+    --border-stitch: #5a4f44;
+    --text: #c4bcb2;
+    --text-dim: #8a8076;
+    --text-bright: #ede6dc;
+    --accent: #c4956a;
+    --accent-soft: #a87a52;
+    --accent-glow: rgba(196,149,106,0.08);
+    --green: #7a9a6a;
+    --red-pin: #c4554d;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-detail: 'Cormorant Garamond', Garamond, serif;
+    --wool-texture: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Wool texture overlay */
+  .wool-bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: var(--wool-texture);
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+  .wool-bg::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 15% 15%, rgba(196,149,106,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 85% 70%, rgba(196,149,106,0.03) 0%, transparent 50%);
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: linear-gradient(180deg, rgba(30,26,20,0.97), rgba(28,24,20,0.93));
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--border-stitch);
+    padding: 0 48px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 20px; font-weight: 600;
+    color: var(--text-bright); font-style: italic; letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo::before {
+    content: '✂'; font-size: 16px; font-style: normal; opacity: 0.7;
+    transform: rotate(-15deg);
+  }
+  .nav-back {
+    color: var(--text-dim); text-decoration: none; font-size: 13px;
+    font-weight: 400; transition: color .2s;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  /* Content */
+  .content-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 120px 48px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-tag {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--accent); margin-bottom: 12px; font-weight: 500;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-display); font-size: 38px; font-weight: 400;
+    color: var(--text-bright); line-height: 1.2; font-style: italic;
+  }
+
+  .page-header .effective {
+    font-size: 13px; color: var(--text-dim); margin-top: 10px; font-weight: 300;
+  }
+
+  .legal-section {
+    margin-bottom: 40px;
+  }
+
+  .legal-section h2 {
+    font-family: var(--font-display); font-size: 22px; font-weight: 400;
+    color: var(--accent); margin-bottom: 14px; font-style: italic;
+  }
+
+  .legal-section p {
+    font-size: 14px; color: var(--text-dim); line-height: 1.75;
+    margin-bottom: 12px; font-weight: 300;
+  }
+
+  .legal-section ul {
+    margin: 0 0 16px 24px;
+    font-size: 14px; color: var(--text-dim); font-weight: 300;
+    line-height: 1.75;
+  }
+
+  .legal-section li { margin-bottom: 6px; }
+
+  .legal-section a {
+    color: var(--accent); text-decoration: none; transition: color .2s;
+  }
+  .legal-section a:hover { color: var(--accent-soft); text-decoration: underline; }
+
+  .highlight-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    outline: 1px solid var(--border-stitch);
+    outline-offset: -4px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-size: 13px; color: var(--text-dim);
+    font-weight: 300; line-height: 1.75;
+  }
+
+  .highlight-box strong {
+    color: var(--accent); font-weight: 500;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  /* Footer */
+  .footer-wrap {
+    max-width: 1080px; margin: 0 auto; padding: 56px 48px 36px;
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 36px; }
+  .footer-grid h4 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 14px; font-weight: 500; }
+  .footer-grid a { color: var(--text-dim); text-decoration: none; font-size: 12px; display: block; margin-bottom: 6px; transition: color .2s; font-weight: 300; }
+  .footer-grid a:hover { color: var(--accent); }
+  .footer-brand p { font-size: 12px; color: var(--text-dim); margin-top: 8px; line-height: 1.6; font-weight: 300; }
+  .footer-bottom { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); padding-top: 18px; border-top: 1px solid var(--border); font-weight: 300; }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 20px; }
+    .content-wrap { padding: 100px 20px 60px; }
+    .page-header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="wool-bg"></div>
+
+<nav>
+  <div class="nav-logo">Business Butlers</div>
+  <a href="index.html" class="nav-back">← Back to Business Butlers</a>
+</nav>
+
+<div class="content-wrap">
+
+  <div class="page-header">
+    <div class="page-tag">Legal</div>
+    <h1>Privacy Policy</h1>
+    <p class="effective">Effective date: June 26, 2026 &nbsp;·&nbsp; Last updated: June 26, 2026</p>
+  </div>
+
+  <p style="font-size:14px; color:var(--text-dim); font-weight:300; margin-bottom:36px;">
+    Business Butlers ("we," "us," or "our") is a service operated by <strong style="color:var(--text-bright); font-weight:500;">CoreTech Studios</strong>.
+    This Privacy Policy explains how we collect, use, and protect your information when you interact with our
+    website and consulting services.
+  </p>
+
+  <!-- 1. What We Collect -->
+  <div class="legal-section">
+    <h2>1. What We Collect</h2>
+    <p>When you submit our intake form to request consulting services, we collect the information you voluntarily provide:</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Name</strong> — so we know who we're talking to</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Email address</strong> — so we can reply to you</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Company name</strong> — to understand your business context</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Role / title</strong> — to know your position in the organization</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Industry</strong> — to tailor our recommendations</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Pain points</strong> — so we understand what needs fixing</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Services checked</strong> — which AI consulting services interest you</li>
+    </ul>
+
+    <div class="highlight-box">
+      <strong>We do not collect anything you don't give us.</strong> There is no tracking, no analytics, no profiling, no advertising pixels, and no third-party data sources feeding into our systems. No backend server stores or processes your data automatically — submissions are handled through a form service (see Section 3).
+    </div>
+  </div>
+
+  <!-- 2. How We Use It -->
+  <div class="legal-section">
+    <h2>2. How We Use Your Data</h2>
+    <p>We use the information you provide strictly for the following purposes:</p>
+    <ul>
+      <li>To respond to your inquiry and provide the consulting services you requested</li>
+      <li>To prepare and send custom proposals or recommendations based on your stated needs</li>
+      <li>To follow up with you about our services (only when you've expressed interest)</li>
+      <li>To communicate about ongoing engagements if you become a client</li>
+    </ul>
+    <p>We do <strong style="color:var(--text-bright); font-weight:500;">not</strong> use your data for marketing automation, newsletters (unless you separately opt in), or to build profiles for resale. We do not share your intake data with any third party except as necessary to deliver the services described below.</p>
+  </div>
+
+  <!-- 3. Third-Party Services -->
+  <div class="legal-section">
+    <h2>3. Third-Party Services</h2>
+    <p>We use a small set of third-party tools to operate. Your data only passes through these services when necessary for the function you're engaging with:</p>
+
+    <p style="margin-top:18px;"><strong style="color:var(--text-bright); font-weight:500;">Formspree</strong> — Our intake form submissions are processed by Formspree for email delivery. When you fill out our form, your data is transmitted to Formspree's servers to route it to our inbox. See <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Formspree's Privacy Policy</a>.</p>
+
+    <p><strong style="color:var(--text-bright); font-weight:500;">Stripe</strong> — If you become a paying client, payment processing is handled by Stripe. Stripe receives transaction data necessary to process payments but does not receive your intake form details. See <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.</p>
+
+    <p><strong style="color:var(--text-bright); font-weight:500;">Gumroad</strong> — If we distribute license keys or digital products through Gumroad, Gumroad processes the purchase transaction. See <a href="https://gumroad.com/privacy" target="_blank" rel="noopener">Gumroad's Privacy Policy</a>.</p>
+
+    <div class="highlight-box">
+      <strong>No data is shared with these services unless you engage with them.</strong> Browsing our site does not trigger calls to Stripe, Gumroad, or analytics scripts. Payments and form submissions only involve third parties at the point of transaction.
+    </div>
+  </div>
+
+  <!-- 4. Cookies -->
+  <div class="legal-section">
+    <h2>4. Cookies</h2>
+    <p>We use minimal, functional cookies to make the site work:</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Form state cookie</strong> — preserves your progress on our intake form so you don't lose information if you navigate away. Contains no personal data — just which form step you're on. Session-only.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Consent cookie</strong> — remembers that you've acknowledged our cookie notice. Expires after 12 months.</li>
+    </ul>
+    <p>We do <strong style="color:var(--text-bright); font-weight:500;">not</strong> use tracking cookies, analytics cookies, advertising cookies, or any third-party cookies. For full details, see our <a href="cookies.html">Cookie Policy</a>.</p>
+  </div>
+
+  <!-- 5. Data Retention -->
+  <div class="legal-section">
+    <h2>5. Data Retention</h2>
+    <p>We retain intake form submissions for as long as necessary to fulfill the consulting engagement or follow-up conversation they relate to. Typical retention periods:</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Active clients</strong> — data retained for the duration of the engagement plus 12 months after completion, for reference and continuity.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Inquiries that don't convert</strong> — data retained for up to 6 months after last contact, then deleted.</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Cookie data</strong> — session cookies are deleted when you close your browser. Consent cookies expire after 12 months.</li>
+    </ul>
+    <p>Because we do not operate a backend database, your intake data lives in email records (Formspree submissions delivered to our inbox). Deletion means removing those emails from our systems.</p>
+  </div>
+
+  <!-- 6. Your Rights -->
+  <div class="legal-section">
+    <h2>6. Your Rights</h2>
+    <p>Depending on your jurisdiction, you may have rights including:</p>
+    <ul>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Access</strong> — request a copy of the personal data we hold about you</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Correction</strong> — ask us to fix inaccurate or incomplete data</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Deletion</strong> — request that we delete your personal data</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Objection</strong> — object to certain processing of your data</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Portability</strong> — receive your data in a structured, machine-readable format</li>
+    </ul>
+    <p>To exercise any of these rights, or if you have questions about your data, email us at the address below. We will respond within 30 days.</p>
+  </div>
+
+  <!-- 7. Security -->
+  <div class="legal-section">
+    <h2>7. Security</h2>
+    <p>We take reasonable measures to protect your information. Our site is served over HTTPS. Form submissions are transmitted over encrypted connections to Formspree. Payment processing is handled by Stripe, which maintains industry-standard security certifications (PCI-DSS Level 1).</p>
+    <p>However, no method of electronic transmission or storage is 100% secure. We cannot guarantee absolute security of your data.</p>
+  </div>
+
+  <!-- 8. Children's Privacy -->
+  <div class="legal-section">
+    <h2>8. Children's Privacy</h2>
+    <p>Our services are directed at business owners and professionals. We do not knowingly collect personal information from anyone under 16 years of age. If you believe a minor has provided us with personal data, please contact us and we will delete it promptly.</p>
+  </div>
+
+  <!-- 9. Changes -->
+  <div class="legal-section">
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date at the top of this page. Material changes will be noted conspicuously. Continued use of our services after changes constitutes acceptance of the updated policy.</p>
+  </div>
+
+  <hr>
+
+  <!-- 10. Contact -->
+  <div class="legal-section">
+    <h2>10. Contact</h2>
+    <p>For privacy-related inquiries or to exercise your data rights:</p>
+
+    <div class="highlight-box">
+      <strong>Email:</strong> <a href="mailto:privacy@coretechlabs.app">privacy@coretechlabs.app</a><br>
+      <strong>Company:</strong> CoreTech Studios<br>
+      <strong>Service:</strong> Business Butlers
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer-wrap">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">Business Butlers</div>
+      <p>Bespoke AI operations for small business.<br>Built by CoreTech Studios. © 2026</p>
+    </div>
+    <div><h4>Services</h4><a href="index.html#services">Lead Response</a><a href="index.html#services">Customer Support</a><a href="index.html#services">Invoicing</a><a href="index.html#services">Meeting Prep</a><a href="index.html#services">Competitor Intel</a></div>
+    <div><h4>Company</h4><a href="index.html#how">About</a><a href="#">Blog / Third-I</a><a href="index.html#fit">Contact</a></div>
+    <div><h4>Legal</h4><a href="cookies.html">Cookie Policy</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+  </div>
+  <div class="footer-bottom"><span>Built for small business. Backed by AI. Zero fluff.</span><span>✂ coretech-labs</span></div>
+</div>
+
+</body>
+</html>
