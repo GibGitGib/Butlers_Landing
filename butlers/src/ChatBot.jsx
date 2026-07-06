@@ -130,7 +130,14 @@ export default function ChatBot({ profile }) {
             style={{ height: "min(480px, 65vh)", boxShadow: "var(--shadow)" }}
           >
             <div className="flex items-center gap-3 border-b border-[var(--line)] bg-[var(--accent)] px-4 py-3 text-[var(--accent-ink)]">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent-ink)]/15 text-lg">🎩</span>
+              <span className="relative h-9 w-9 shrink-0">
+                <img
+                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&q=70&auto=format&fit=crop"
+                  alt="The Butler"
+                  className="h-full w-full rounded-full border-2 border-[var(--accent-ink)]/40 object-cover"
+                />
+                <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[var(--accent)] bg-[#5ede7a]" />
+              </span>
               <div>
                 <p className="font-display text-sm font-semibold">The Butler</p>
                 <p className="text-[11px] opacity-80">Always on. Never pushy.</p>
