@@ -2,9 +2,29 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getBackendBase, getSessionId, getWebSocketUrl, sanitizeProfile } from "./butlerClient.js";
 
-const SNAPSHOT_KEY = "bb-chat-snapshot-v1";
-const TRIGGERED_KEY = "bb-chat-triggered-v1";
+const SNAPSHOT_KEY = "bb-chat-snapshot-v2";
+const AUTO_OPENED_KEY = "bb-chat-auto-opened-v2";
 const PROTOCOL_VERSION = 1;
+
+function ServiceBellIcon({ close = false, className = "h-7 w-7" }) {
+  if (close) {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <path d="M6 6l12 12M18 6 6 18" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8.25 21.25h15.5" />
+      <path d="M10.25 20.75c.35-5.25 2.35-8.15 5.75-8.15s5.4 2.9 5.75 8.15" />
+      <path d="M14.35 11.25c.4-.75.95-1.15 1.65-1.15s1.25.4 1.65 1.15" />
+      <path d="M6.5 23.75h19" />
+      <path d="M12.35 25.75h7.3" />
+    </svg>
+  );
+}
 
 function readSnapshot() {
   try {
@@ -35,8 +55,8 @@ export default function ChatBot({ profile }) {
   const sessionId = useMemo(() => getSessionId(), []);
   const initialSnapshot = useMemo(() => readSnapshot(), []);
   const [messages, setMessages] = useState(initialSnapshot?.transcript ?? []);
-  const [visible, setVisible] = useState(() => sessionStorage.getItem(TRIGGERED_KEY) === "1");
   const [open, setOpen] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(() => window.scrollY > 0);
   const [typing, setTyping] = useState(false);
   const [draft, setDraft] = useState("");
   const [status, setStatus] = useState("connecting");
@@ -63,6 +83,14 @@ export default function ChatBot({ profile }) {
   const track = useCallback((name, section, metadata) => {
     send(eventEnvelope(sessionId, name, section, metadata));
   }, [send, sessionId]);
+
+  const beginConversation = useCallback((source) => {
+    if (sessionStorage.getItem(AUTO_OPENED_KEY) === "1") return false;
+    sessionStorage.setItem(AUTO_OPENED_KEY, "1");
+    send({ protocolVersion: PROTOCOL_VERSION, type: "bot.trigger", sessionId, payload: { section: "qualify" } });
+    track(source === "auto" ? "bot_auto_opened" : "bot_manually_started", "qualify");
+    return true;
+  }, [send, sessionId, track]);
 
   useEffect(() => {
     if (!getBackendBase()) {
@@ -136,13 +164,6 @@ export default function ChatBot({ profile }) {
           track("section_reached", section);
           const timers = [5, 15].map((seconds) => window.setTimeout(() => track("section_dwell", section, { seconds }), seconds * 1000));
           dwellTimers.set(entry.target, timers);
-          if (section === "qualify" && sessionStorage.getItem(TRIGGERED_KEY) !== "1") {
-            sessionStorage.setItem(TRIGGERED_KEY, "1");
-            setVisible(true);
-            setOpen(true);
-            send({ protocolVersion: PROTOCOL_VERSION, type: "bot.trigger", sessionId, payload: { section: "qualify" } });
-            track("bot_auto_opened", "qualify");
-          }
         } else {
           track("section_left", section);
           for (const timer of dwellTimers.get(entry.target) ?? []) window.clearTimeout(timer);
@@ -155,6 +176,8 @@ export default function ChatBot({ profile }) {
 
     const fired = new Set();
     const onScroll = () => {
+      if (scrollY > 0) setHasScrolled(true);
+
       const scrollable = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
       const depth = Math.min(1, Math.max(0, scrollY / scrollable));
       for (const threshold of [0.5, 0.8]) {
@@ -163,6 +186,11 @@ export default function ChatBot({ profile }) {
           track("scroll_depth", undefined, { depth: threshold });
         }
       }
+
+      const qualifySection = document.getElementById("qualify");
+      if (qualifySection?.getBoundingClientRect().bottom <= 0 && beginConversation("auto")) {
+        setOpen(true);
+      }
     };
     addEventListener("scroll", onScroll, { passive: true });
     return () => {
@@ -170,16 +198,12 @@ export default function ChatBot({ profile }) {
       removeEventListener("scroll", onScroll);
       for (const timers of dwellTimers.values()) for (const timer of timers) window.clearTimeout(timer);
     };
-  }, [send, sessionId, track]);
+  }, [beginConversation, track]);
 
   useEffect(() => {
     const openAssessment = (event) => {
       const intent = event.detail?.intent ?? "assessment";
-      if (sessionStorage.getItem(TRIGGERED_KEY) !== "1") {
-        sessionStorage.setItem(TRIGGERED_KEY, "1");
-        send({ protocolVersion: PROTOCOL_VERSION, type: "bot.trigger", sessionId, payload: { section: "qualify" } });
-      }
-      setVisible(true);
+      beginConversation("manual");
       setOpen(true);
       window.setTimeout(() => {
         send({
@@ -196,7 +220,7 @@ export default function ChatBot({ profile }) {
     };
     addEventListener("business-butlers:open-assessment", openAssessment);
     return () => removeEventListener("business-butlers:open-assessment", openAssessment);
-  }, [send, sessionId]);
+  }, [beginConversation, send, sessionId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -230,11 +254,10 @@ export default function ChatBot({ profile }) {
 
   const toggle = () => {
     const next = !open;
+    if (next) beginConversation("manual");
     setOpen(next);
     track(next ? "bot_opened" : "bot_closed", "qualify");
   };
-
-  if (!visible) return null;
 
   return (
     <>
@@ -245,12 +268,11 @@ export default function ChatBot({ profile }) {
         onClick={toggle}
         initial={{ scale: 0 }} animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 18 }}
-        className="btn-primary fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg"
-        style={{ boxShadow: "var(--shadow)" }}
+        className={`butler-launcher btn-primary fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg ${hasScrolled && !open ? "butler-launcher-glow" : ""}`}
       >
         <AnimatePresence mode="wait" initial={false}>
-          <motion.span key={open ? "x" : "chat"} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} className="text-xl">
-            {open ? "✕" : "🎩"}
+          <motion.span key={open ? "x" : "bell"} initial={{ rotate: -18, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 18, opacity: 0 }}>
+            <ServiceBellIcon close={open} />
           </motion.span>
         </AnimatePresence>
       </motion.button>
@@ -266,12 +288,12 @@ export default function ChatBot({ profile }) {
             onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }}
           >
             <header className="flex items-center gap-3 border-b border-[var(--line)] bg-[var(--accent)] px-4 py-3 text-[var(--accent-ink)]">
-              <span className="relative h-9 w-9 shrink-0">
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&q=70&auto=format&fit=crop" alt="" className="h-full w-full rounded-full border-2 border-[var(--accent-ink)]/40 object-cover" />
+              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--accent-ink)]/35 bg-black/10">
+                <ServiceBellIcon className="h-6 w-6" />
                 <span className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[var(--accent)] ${status === "connected" ? "bg-[#5ede7a]" : "bg-[var(--orange)]"}`} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-display text-sm font-semibold">The Butler</p>
+                <p className="font-display text-sm font-semibold">Ian, your Butler</p>
                 <p className="truncate text-[11px] opacity-80">{status === "connected" ? "Ready when you are." : status === "reconnecting" ? "Reconnecting…" : "Assessment service unavailable"}</p>
               </div>
               <button onClick={() => setOpen(false)} aria-label="Close chat" className="rounded-lg px-2 py-1 text-lg hover:bg-black/10">×</button>
