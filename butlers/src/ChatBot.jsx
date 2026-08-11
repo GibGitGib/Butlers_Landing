@@ -95,7 +95,6 @@ export default function ChatBot({ profile }) {
           }
           if (envelope.type === "lead.submission.result") {
             setTyping(false);
-            setNotice(envelope.payload.ok ? "Assessment delivered." : envelope.payload.message || "Delivery failed. Please retry.");
           }
           if (envelope.type === "error") {
             setTyping(false);
@@ -183,7 +182,15 @@ export default function ChatBot({ profile }) {
       setVisible(true);
       setOpen(true);
       window.setTimeout(() => {
-        send({ protocolVersion: PROTOCOL_VERSION, type: "chat.message.received", sessionId, payload: { text: intent === "booking" ? "BOOK" : "ASSESSMENT" } });
+        send({
+          protocolVersion: PROTOCOL_VERSION,
+          type: "chat.message.received",
+          sessionId,
+          payload: {
+            text: intent === "booking" ? "BOOK" : "ASSESSMENT",
+            displayText: intent === "booking" ? "Book a call" : "Take the assessment",
+          },
+        });
         setTyping(true);
       }, 50);
     };
@@ -200,14 +207,14 @@ export default function ChatBot({ profile }) {
   const options = typing ? [] : (lastBot?.options ?? []);
   const input = typing ? null : lastBot?.input;
 
-  const sendMessage = useCallback((text) => {
+  const sendMessage = useCallback((text, displayText = text) => {
     const clean = text.trim();
     if (!clean || typing) return;
-    setMessages((current) => [...current, { id: `pending-${crypto.randomUUID()}`, role: "visitor", text: clean }]);
+    setMessages((current) => [...current, { id: `pending-${crypto.randomUUID()}`, role: "visitor", text: displayText.trim() || clean }]);
     setDraft("");
     setNotice("");
     setTyping(true);
-    send({ protocolVersion: PROTOCOL_VERSION, type: "chat.message.received", sessionId, payload: { text: clean } });
+    send({ protocolVersion: PROTOCOL_VERSION, type: "chat.message.received", sessionId, payload: { text: clean, displayText: displayText.trim() || clean } });
     track("chat_message_sent", "qualify", { inputType: input?.type ?? "option" });
   }, [input?.type, send, sessionId, track, typing]);
 
@@ -218,7 +225,7 @@ export default function ChatBot({ profile }) {
       if (target.origin === location.origin) location.assign(target.href);
       else window.open(target.href, "_blank", "noopener,noreferrer");
     }
-    sendMessage(option.value);
+    sendMessage(option.value, option.label);
   };
 
   const toggle = () => {
