@@ -193,6 +193,8 @@ body {
 .pulse-ring { animation: pulse-ring 2.4s ease-out infinite; }
 
 .butler-launcher {
+  background: linear-gradient(135deg, #2f5233 0%, #4a8a50 100%);
+  color: #fff;
   box-shadow: var(--shadow);
   isolation: isolate;
 }

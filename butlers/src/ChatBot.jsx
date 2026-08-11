@@ -288,7 +288,7 @@ export default function ChatBot({ profile }) {
             onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }}
           >
             <header className="flex items-center gap-3 border-b border-[var(--line)] bg-[var(--accent)] px-4 py-3 text-[var(--accent-ink)]">
-              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--accent-ink)]/35 bg-black/10">
+              <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/35 bg-[#2f5233] text-white">
                 <ServiceBellIcon className="h-6 w-6" />
                 <span className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[var(--accent)] ${status === "connected" ? "bg-[#5ede7a]" : "bg-[var(--orange)]"}`} />
               </span>
