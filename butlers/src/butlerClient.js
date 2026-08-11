@@ -12,7 +12,7 @@ export function getSessionId() {
 export function getBackendBase() {
   const configured = import.meta.env.VITE_DASCB_BASE_URL?.trim();
   if (configured) return configured.replace(/\/$/, "");
-  return import.meta.env.DEV ? "http://localhost:3001" : "";
+  return import.meta.env.DEV ? `${location.protocol}//${location.hostname}:3001` : "";
 }
 
 export function getWebSocketUrl(sessionId) {
