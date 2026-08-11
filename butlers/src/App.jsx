@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform, useInView } from "framer-motion";
 import Diagnosis from "./Diagnosis.jsx";
 import ChatBot from "./ChatBot.jsx";
+import { submitLead } from "./butlerClient.js";
 import "./App.css";
 
 /* ================= content ================= */
@@ -243,9 +244,12 @@ function Kicker({ n, children }) {
   );
 }
 
-function EmailCapture({ prompt = "Want the full breakdown? Drop your email.", compact = false }) {
+function EmailCapture({ prompt = "Want the full breakdown? Drop your email.", compact = false, profile = {}, source = "inline-breakdown" }) {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const startedAt = useRef(new Date().toISOString());
   if (done)
     return (
       <motion.p initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-[13px] font-medium text-[var(--green)]">
@@ -254,7 +258,20 @@ function EmailCapture({ prompt = "Want the full breakdown? Drop your email.", co
     );
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); if (/.+@.+\..+/.test(email)) setDone(true); }}
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (!/.+@.+\..+/.test(email) || submitting) return;
+        setSubmitting(true);
+        setError("");
+        try {
+          await submitLead({ intent: "newsletter", contact: { email }, profile, source, startedAt: startedAt.current });
+          setDone(true);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "We couldn't send that yet. Please retry.");
+        } finally {
+          setSubmitting(false);
+        }
+      }}
       className={compact ? "" : "mt-3"}
     >
       <p className="mb-2 text-[13px] text-[var(--ink-soft)]">{prompt}</p>
@@ -267,8 +284,9 @@ function EmailCapture({ prompt = "Want the full breakdown? Drop your email.", co
           placeholder="you@business.com"
           className="min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] px-3 py-2.5 text-sm outline-none focus:border-[var(--accent)] focus:shadow-[0_0_0_3px_var(--accent-glow)]"
         />
-        <button className="btn-primary shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold">Send it</button>
+        <button disabled={submitting} className="btn-primary shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold disabled:cursor-wait disabled:opacity-60">{submitting ? "Sending…" : "Send it"}</button>
       </div>
+      {error && <p role="alert" className="mt-2 text-[12px] text-[var(--orange)]">{error}</p>}
     </form>
   );
 }
@@ -718,7 +736,7 @@ export default function App() {
                           <summary className="cursor-pointer list-none text-[12px] font-semibold text-[var(--accent)] underline decoration-wavy underline-offset-4">
                             Not ready to talk? Get this step by email instead
                           </summary>
-                          <div className="mt-3"><EmailCapture compact /></div>
+                          <div className="mt-3"><EmailCapture compact profile={profile} source={`process-${title.toLowerCase().replaceAll(" ", "-")}`} /></div>
                         </details>
                       </div>
                     </div>
@@ -975,8 +993,9 @@ export default function App() {
 
             <div className="space-y-5">
               <ScaleIn>
-                <a
-                  href="../intake-form.html"
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("business-butlers:open-assessment", { detail: { intent: "assessment" } }))}
                   className="btn-primary pulse-ring relative block overflow-hidden rounded-2xl p-7 text-center"
                   style={{ boxShadow: "var(--shadow-lg)" }}
                 >
@@ -991,17 +1010,20 @@ export default function App() {
                   </motion.span>
                   <span className="font-display block text-2xl font-black">Take Assessment Now</span>
                   <span className="mt-1 block text-[13px] opacity-80">5 minutes · your taps above carry over</span>
+                </button>
+                <a href="/intake-form.html" className="mt-3 block text-center text-[12px] font-semibold text-[var(--ink-soft)] underline decoration-wavy underline-offset-4">
+                  Prefer a form? Use the 3-step intake
                 </a>
               </ScaleIn>
               <SlideIn from="right" delay={0.1}>
-                <a href="../intake-form.html" className="card card-tap block p-6 text-center" style={{ boxShadow: "var(--shadow-sm)" }}>
+                <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("business-butlers:open-assessment", { detail: { intent: "booking" } }))} className="card card-tap block w-full p-6 text-center" style={{ boxShadow: "var(--shadow-sm)" }}>
                   <span className="font-display block text-xl font-bold">Book For Later</span>
                   <span className="mt-1 block text-[13px] text-[var(--ink-soft)]">Pick a slot that fits around the actual work</span>
-                </a>
+                </button>
               </SlideIn>
               <Reveal delay={0.2}>
                 <a
-                  href="../demo-report.html"
+                  href="/demo-report.html"
                   className="block p-4 text-center text-[14px] font-semibold text-[var(--ink-soft)] underline decoration-wavy underline-offset-4 hover:text-[var(--accent)]"
                 >
                   Self Discovery — browse the breakdown on your own
@@ -1009,7 +1031,7 @@ export default function App() {
               </Reveal>
               <ScaleIn delay={0.25}>
                 <div className="card p-6" style={{ boxShadow: "var(--shadow-sm)" }}>
-                  <EmailCapture prompt="Not today? Take the four-step breakdown with you." />
+                  <EmailCapture prompt="Not today? Take the four-step breakdown with you." profile={profile} source="cta-four-step-breakdown" />
                 </div>
               </ScaleIn>
             </div>

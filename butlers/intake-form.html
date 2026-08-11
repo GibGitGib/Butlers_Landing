@@ -386,7 +386,8 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+  import { getSessionId, sanitizeProfile, submitLead } from './src/butlerClient.js';
   let currentStep = 1;
 
   function showStep(n) {
@@ -433,7 +434,8 @@
     if (n > 1) showStep(n-1);
   }
 
-  function submitForm() {
+  async function submitForm() {
+    if (!validateStep(1) || !validateStep(2)) return;
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = 'Submitting...';
@@ -460,17 +462,60 @@
       source: 'business-butlers-intake-form',
     };
 
-    // For now: log to console + show success
-    // When wired: POST to n8n webhook → Agent 1 auto-responds
-    console.log('📨 Lead submitted:', JSON.stringify(data, null, 2));
-    
-    // Simulate async submit
-    setTimeout(() => {
+    try {
+      await submitLead({
+        submissionId: crypto.randomUUID(),
+        sessionId: getSessionId(),
+        intent: 'assessment_form',
+        source: 'business-butlers-intake-form',
+        profile: sanitizeProfile(data),
+        contact: { name: data.name, email: data.email, company: data.company },
+        assessment: data,
+      });
+
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
       document.getElementById('success').classList.add('active');
       document.querySelectorAll('.progress-dot').forEach(d => { d.classList.add('done'); d.classList.remove('active'); });
-    }, 600);
+    } catch (error) {
+      btn.disabled = false;
+      btn.textContent = 'Submit & Get a Plan';
+      let errorNode = document.getElementById('submit-error');
+      if (!errorNode) {
+        errorNode = document.createElement('p');
+        errorNode.id = 'submit-error';
+        errorNode.className = 'field-error show';
+        errorNode.setAttribute('role', 'alert');
+        btn.parentElement.insertAdjacentElement('afterend', errorNode);
+      }
+      errorNode.textContent = error instanceof Error ? error.message : 'We could not send that yet. Please try again.';
+    }
   }
+
+  function restoreChatProfile() {
+    try {
+      const snapshot = JSON.parse(sessionStorage.getItem('bb-chat-snapshot-v1') || 'null');
+      const profile = sanitizeProfile(snapshot?.profile || {});
+      const values = {
+        name: snapshot?.contact?.name,
+        email: snapshot?.contact?.email,
+        company: snapshot?.assessment?.companyAndTeamSize,
+        industry: profile.vertical,
+        pain: snapshot?.assessment?.priorityAndContext,
+        current: snapshot?.assessment?.currentTools,
+      };
+      Object.entries(values).forEach(([id, value]) => {
+        const field = document.getElementById(id);
+        if (field && value && !field.value) field.value = value;
+      });
+    } catch {
+      // A malformed session snapshot should never block the form.
+    }
+  }
+
+  window.nextStep = nextStep;
+  window.prevStep = prevStep;
+  window.submitForm = submitForm;
+  restoreChatProfile();
 </script>
 </body>
 </html>

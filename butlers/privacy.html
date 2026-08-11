@@ -180,7 +180,7 @@
   <div class="page-header">
     <div class="page-tag">Legal</div>
     <h1>Privacy Policy</h1>
-    <p class="effective">Effective date: June 26, 2026 &nbsp;·&nbsp; Last updated: June 26, 2026</p>
+    <p class="effective">Effective date: August 11, 2026 &nbsp;·&nbsp; Last updated: August 11, 2026</p>
   </div>
 
   <p style="font-size:14px; color:var(--text-dim); font-weight:300; margin-bottom:36px;">
@@ -201,10 +201,12 @@
       <li><strong style="color:var(--text-bright); font-weight:500;">Industry</strong> — to tailor our recommendations</li>
       <li><strong style="color:var(--text-bright); font-weight:500;">Pain points</strong> — so we understand what needs fixing</li>
       <li><strong style="color:var(--text-bright); font-weight:500;">Services checked</strong> — which AI consulting services interest you</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Assistant responses</strong> — the structured answers and contact details you choose to submit</li>
+      <li><strong style="color:var(--text-bright); font-weight:500;">Engagement events</strong> — pseudonymous session, section, dwell, scroll, assistant, and conversion events</li>
     </ul>
 
     <div class="highlight-box">
-      <strong>We do not collect anything you don't give us.</strong> There is no tracking, no analytics, no profiling, no advertising pixels, and no third-party data sources feeding into our systems. No backend server stores or processes your data automatically — submissions are handled through a form service (see Section 3).
+      <strong>We keep analytics limited and purpose-specific.</strong> Engagement events use a random browser-session identifier and omit raw chat messages, names, email addresses, and URL query strings. If you submit contact details, that identifier is associated with the resulting lead. We do not use advertising pixels or third-party data enrichment.
     </div>
   </div>
 
@@ -226,26 +228,26 @@
     <h2>3. Third-Party Services</h2>
     <p>We use a small set of third-party tools to operate. Your data only passes through these services when necessary for the function you're engaging with:</p>
 
-    <p style="margin-top:18px;"><strong style="color:var(--text-bright); font-weight:500;">Formspree</strong> — Our intake form submissions are processed by Formspree for email delivery. When you fill out our form, your data is transmitted to Formspree's servers to route it to our inbox. See <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Formspree's Privacy Policy</a>.</p>
+    <p style="margin-top:18px;"><strong style="color:var(--text-bright); font-weight:500;">Vercel</strong> — hosts the website and the Business Butlers assistant API.</p>
 
-    <p><strong style="color:var(--text-bright); font-weight:500;">Stripe</strong> — If you become a paying client, payment processing is handled by Stripe. Stripe receives transaction data necessary to process payments but does not receive your intake form details. See <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.</p>
+    <p><strong style="color:var(--text-bright); font-weight:500;">n8n and email delivery</strong> — receive authenticated lead and analytics events, store workflow records, and deliver requested confirmations and team notifications.</p>
 
-    <p><strong style="color:var(--text-bright); font-weight:500;">Gumroad</strong> — If we distribute license keys or digital products through Gumroad, Gumroad processes the purchase transaction. See <a href="https://gumroad.com/privacy" target="_blank" rel="noopener">Gumroad's Privacy Policy</a>.</p>
+    <p><strong style="color:var(--text-bright); font-weight:500;">Calendly</strong> — receives information only when you choose to open the booking experience.</p>
 
     <div class="highlight-box">
-      <strong>No data is shared with these services unless you engage with them.</strong> Browsing our site does not trigger calls to Stripe, Gumroad, or analytics scripts. Payments and form submissions only involve third parties at the point of transaction.
+      <strong>No payment information is collected through this website.</strong> The assistant and engagement analytics contact our configured infrastructure from page load; Calendly opens only when you choose a booking action.
     </div>
   </div>
 
   <!-- 4. Cookies -->
   <div class="legal-section">
     <h2>4. Cookies</h2>
-    <p>We use minimal, functional cookies to make the site work:</p>
+    <p>We use minimal browser storage to make the site and assessment work:</p>
     <ul>
       <li><strong style="color:var(--text-bright); font-weight:500;">Form state cookie</strong> — preserves your progress on our intake form so you don't lose information if you navigate away. Contains no personal data — just which form step you're on. Session-only.</li>
       <li><strong style="color:var(--text-bright); font-weight:500;">Consent cookie</strong> — remembers that you've acknowledged our cookie notice. Expires after 12 months.</li>
     </ul>
-    <p>We do <strong style="color:var(--text-bright); font-weight:500;">not</strong> use tracking cookies, analytics cookies, advertising cookies, or any third-party cookies. For full details, see our <a href="cookies.html">Cookie Policy</a>.</p>
+    <p>We do <strong style="color:var(--text-bright); font-weight:500;">not</strong> use advertising cookies. For full details, see our <a href="cookies.html">Cookie &amp; Browser Storage Policy</a>.</p>
   </div>
 
   <!-- 5. Data Retention -->
@@ -257,7 +259,7 @@
       <li><strong style="color:var(--text-bright); font-weight:500;">Inquiries that don't convert</strong> — data retained for up to 6 months after last contact, then deleted.</li>
       <li><strong style="color:var(--text-bright); font-weight:500;">Cookie data</strong> — session cookies are deleted when you close your browser. Consent cookies expire after 12 months.</li>
     </ul>
-    <p>Because we do not operate a backend database, your intake data lives in email records (Formspree submissions delivered to our inbox). Deletion means removing those emails from our systems.</p>
+    <p>Detailed engagement analytics are retained for 90 days. Lead and analytics records are stored in configured workflow data tables and relevant email records; deletion requests apply to those systems.</p>
   </div>
 
   <!-- 6. Your Rights -->
@@ -277,7 +279,7 @@
   <!-- 7. Security -->
   <div class="legal-section">
     <h2>7. Security</h2>
-    <p>We take reasonable measures to protect your information. Our site is served over HTTPS. Form submissions are transmitted over encrypted connections to Formspree. Payment processing is handled by Stripe, which maintains industry-standard security certifications (PCI-DSS Level 1).</p>
+    <p>We take reasonable measures to protect your information. The site and assistant are served over HTTPS/WSS. Lead and analytics webhooks are authenticated, request sizes and rates are limited, and secrets remain in server-side environment variables.</p>
     <p>However, no method of electronic transmission or storage is 100% secure. We cannot guarantee absolute security of your data.</p>
   </div>
 
