@@ -68,6 +68,11 @@ export default function ChatBot({ profile }) {
   const [open, setOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(() => window.scrollY > 0);
   const [typing, setTyping] = useState(false);
+  // `pending` spans the whole turn; `typing` only covers the part before any
+  // text arrives. Once a streamed reply starts the dots give way to the text,
+  // but the composer stays withheld until the turn actually resolves.
+  const [pending, setPending] = useState(false);
+  const [streaming, setStreaming] = useState(null);
   const [draft, setDraft] = useState("");
   const [status, setStatus] = useState("connecting");
   const [notice, setNotice] = useState("");
@@ -127,15 +132,30 @@ export default function ChatBot({ profile }) {
         try {
           const envelope = JSON.parse(event.data);
           if (envelope.type === "session.ready") persistSnapshot(envelope.payload.snapshot);
+          if (envelope.type === "chat.message.delta") {
+            // Progressive text only. The authoritative message, with its
+            // options and input, still arrives as chat.message.sent.
+            setTyping(false);
+            setStreaming((current) =>
+              current?.id === envelope.payload.messageId
+                ? { id: current.id, text: current.text + envelope.payload.text }
+                : { id: envelope.payload.messageId, text: envelope.payload.text }
+            );
+          }
           if (envelope.type === "chat.message.sent") {
             setTyping(false);
+            setPending(false);
+            setStreaming(null);
             persistSnapshot(envelope.payload.snapshot);
           }
           if (envelope.type === "lead.submission.result") {
             setTyping(false);
+            setPending(false);
           }
           if (envelope.type === "error") {
             setTyping(false);
+            setPending(false);
+            setStreaming(null);
             setNotice(envelope.payload.message);
           }
         } catch {
@@ -145,8 +165,10 @@ export default function ChatBot({ profile }) {
       ws.addEventListener("close", () => {
         if (disposed) return;
         // Release the composer: the pending reply died with the socket, and
-        // nothing on the resume path clears this flag.
+        // nothing on the resume path clears these flags.
         setTyping(false);
+        setPending(false);
+        setStreaming(null);
         setStatus("reconnecting");
         const delay = Math.min(1000 * (2 ** retryRef.current), 30000);
         retryRef.current += 1;
@@ -162,16 +184,20 @@ export default function ChatBot({ profile }) {
     };
   }, [persistSnapshot, sessionId]);
 
-  // Watchdog: never let a lost or slow reply hold the composer indefinitely.
-  // Any transition out of `typing` clears the timer via the cleanup.
+  // Watchdog: never let a lost or stalled reply hold the composer
+  // indefinitely. Keyed on the whole turn rather than on `typing`, so a stream
+  // that starts and then dies is still caught. Each delta re-runs this effect
+  // and so restarts the clock — a slow stream is alive, not stuck.
   useEffect(() => {
-    if (!typing) return undefined;
+    if (!pending) return undefined;
     const timer = window.setTimeout(() => {
       setTyping(false);
+      setPending(false);
+      setStreaming(null);
       setNotice("That reply didn't come through. Please try again.");
     }, REPLY_TIMEOUT_MS);
     return () => window.clearTimeout(timer);
-  }, [typing]);
+  }, [pending, streaming]);
 
   useEffect(() => {
     profileRef.current = sanitizeProfile(profile);
@@ -240,6 +266,7 @@ export default function ChatBot({ profile }) {
           },
         });
         setTyping(true);
+        setPending(true);
       }, 50);
     };
     addEventListener("business-butlers:open-assessment", openAssessment);
@@ -249,22 +276,25 @@ export default function ChatBot({ profile }) {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
     if (open) inputRef.current?.focus({ preventScroll: true });
-  }, [messages, typing, open]);
+  }, [messages, typing, streaming, open]);
 
   const lastBot = [...messages].reverse().find((message) => message.role === "bot");
-  const options = typing ? [] : (lastBot?.options ?? []);
-  const input = typing ? null : lastBot?.input;
+  // Withhold the controls for the whole turn, not just the dots phase — mid
+  // stream the previous message's options are stale and would misroute.
+  const options = pending ? [] : (lastBot?.options ?? []);
+  const input = pending ? null : lastBot?.input;
 
   const sendMessage = useCallback((text, displayText = text) => {
     const clean = text.trim();
-    if (!clean || typing) return;
+    if (!clean || pending) return;
     setMessages((current) => [...current, { id: `pending-${crypto.randomUUID()}`, role: "visitor", text: displayText.trim() || clean }]);
     setDraft("");
     setNotice("");
     setTyping(true);
+    setPending(true);
     send({ protocolVersion: PROTOCOL_VERSION, type: "chat.message.received", sessionId, payload: { text: clean, displayText: displayText.trim() || clean } });
     track("chat_message_sent", "qualify", { inputType: input?.type ?? "option" });
-  }, [input?.type, send, sessionId, track, typing]);
+  }, [input?.type, pending, send, sessionId, track]);
 
   const choose = (option) => {
     if (option.link) {
@@ -329,6 +359,11 @@ export default function ChatBot({ profile }) {
                   {message.text}
                 </motion.div>
               ))}
+              {streaming && (
+                <div data-testid="streaming-message" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-[var(--bg-soft)] px-3.5 py-2.5 text-[13px] leading-relaxed text-[var(--ink)]">
+                  {streaming.text}
+                </div>
+              )}
               {typing && <div aria-label="The Butler is responding" className="flex w-14 items-center justify-center gap-1 rounded-2xl bg-[var(--bg-soft)] px-3 py-3">{[0, 1, 2].map((dot) => <span key={dot} className="typing-dot h-1.5 w-1.5 rounded-full bg-[var(--ink-soft)]" />)}</div>}
               {notice && <p className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] px-3 py-2 text-[12px] text-[var(--ink-soft)]">{notice}</p>}
               {status === "unavailable" && messages.length === 0 && (
