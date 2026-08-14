@@ -6,6 +6,16 @@ const SNAPSHOT_KEY = "bb-chat-snapshot-v2";
 const AUTO_OPENED_KEY = "bb-chat-auto-opened-v2";
 const PROTOCOL_VERSION = 1;
 
+/**
+ * How long to wait for a reply before releasing the composer.
+ *
+ * While `typing` is true the options and the input are both withheld, so a
+ * turn that never resolves leaves the visitor with no way to act. Generous
+ * enough to cover a slow backend turn, short enough that a dropped reply
+ * doesn't strand the conversation.
+ */
+const REPLY_TIMEOUT_MS = 20_000;
+
 function ServiceBellIcon({ close = false, className = "h-7 w-7" }) {
   if (close) {
     return (
@@ -134,6 +144,9 @@ export default function ChatBot({ profile }) {
       });
       ws.addEventListener("close", () => {
         if (disposed) return;
+        // Release the composer: the pending reply died with the socket, and
+        // nothing on the resume path clears this flag.
+        setTyping(false);
         setStatus("reconnecting");
         const delay = Math.min(1000 * (2 ** retryRef.current), 30000);
         retryRef.current += 1;
@@ -148,6 +161,17 @@ export default function ChatBot({ profile }) {
       socketRef.current?.close();
     };
   }, [persistSnapshot, sessionId]);
+
+  // Watchdog: never let a lost or slow reply hold the composer indefinitely.
+  // Any transition out of `typing` clears the timer via the cleanup.
+  useEffect(() => {
+    if (!typing) return undefined;
+    const timer = window.setTimeout(() => {
+      setTyping(false);
+      setNotice("That reply didn't come through. Please try again.");
+    }, REPLY_TIMEOUT_MS);
+    return () => window.clearTimeout(timer);
+  }, [typing]);
 
   useEffect(() => {
     profileRef.current = sanitizeProfile(profile);
