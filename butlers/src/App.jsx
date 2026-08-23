@@ -7,13 +7,34 @@ import "./App.css";
 
 /* ================= content ================= */
 
+/**
+ * PHOTO SLOTS — every image on the page lives here.
+ * To swap a photo, replace the URL. To use a local file, drop it in
+ * `public/` and use "/your-file.jpg". Nothing else needs to change.
+ *
+ *   heroButler  full-bleed hero backdrop   landscape 16:9   ~1600w   eager
+ *   jim/janet/allen  persona cards         portrait 3:4     ~800w    lazy
+ *   butler      "word from a Butler" card  portrait 3:4     ~640w    lazy
+ *   team        CTA hub, side-by-side      landscape 4:3    ~1200w   lazy
+ *   moreLife    walkthrough "More Life"    landscape 3:2    ~900w    lazy
+ *   process     walkthrough process shot   landscape 3:2    ~900w    lazy
+ *
+ * Stock placeholders for soft launch — replace with real client/team
+ * photography when available.
+ */
 const IMG = {
   heroButler: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600&q=75&auto=format&fit=crop",
-  jim: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=640&q=70&auto=format&fit=crop",
-  janet: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=640&q=70&auto=format&fit=crop",
-  allen: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=640&q=70&auto=format&fit=crop",
+  jim: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=70&auto=format&fit=crop",
+  janet: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=70&auto=format&fit=crop",
+  allen: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=70&auto=format&fit=crop",
   butler: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=640&q=70&auto=format&fit=crop",
   team: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&q=70&auto=format&fit=crop",
+  moreLife: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?w=900&q=70&auto=format&fit=crop",
+  process: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=70&auto=format&fit=crop",
+
+  /* ── Ready for future photos — fill in and they render automatically ── */
+  testimonial1: null, // portrait 1:1, ~400w — client headshot for a quote card
+  gallery: [],        // landscape 3:2, ~900w — add URLs for a results strip
 };
 
 const PAIN_CARDS = [
@@ -513,7 +534,7 @@ export default function App() {
         {/* ═══════ 2 — EMPATHY ═══════ */}
         <section id="empathy" className="relative overflow-hidden py-20 sm:py-32">
           <div className="blob blob-accent absolute -left-32 top-0 h-80 w-80" />
-          <div className="mx-auto max-w-2xl px-5">
+          <div className="mx-auto max-w-2xl px-5 lg:max-w-4xl">
             <Kicker n={2}>we've seen your months</Kicker>
             <div className="font-display space-y-5 text-[clamp(1.6rem,7vw,2.8rem)] leading-[1.05] font-bold">
               <Parallax speed={0.06}>
@@ -548,21 +569,45 @@ export default function App() {
           <div className="blob blob-tan absolute right-0 top-1/4 h-72 w-72" />
           <div className="pointer-events-none absolute inset-0" style={{ background: "var(--section-glow)" }} />
 
-          <div className="relative mx-auto max-w-2xl px-5">
+          <div className="relative mx-auto max-w-2xl px-5 lg:max-w-5xl">
             <Kicker n={3}>the answer</Kicker>
-            <Reveal blur>
-              <p className="font-display text-[clamp(1.2rem,4.5vw,1.7rem)] leading-relaxed font-medium">
-                <WordReveal text="Some months you swim. Some months you sweat. The work never changed." />
-                {" "}
-                <em className="font-semibold text-[var(--accent)]"><WordReveal text="The pattern was always invisible. Until now." delay={0.6} /></em>
-              </p>
-            </Reveal>
-            <SlideIn from="left" delay={0.25}>
-              <p className="mt-8 max-w-lg text-[15px] leading-relaxed text-[var(--ink-soft)]">
-                The answer is simple, not easy, but you already knew that. We'll take you through our
-                four-step Business Butler process.
-              </p>
-            </SlideIn>
+
+            <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12">
+              <div>
+                <Reveal blur>
+                  <p className="font-display max-w-[34ch] text-[clamp(1.2rem,4.5vw,1.7rem)] leading-relaxed font-medium">
+                    <WordReveal text="Some months you swim. Some months you sweat. The work never changed." />
+                    {" "}
+                    <em className="font-semibold text-[var(--accent)]"><WordReveal text="The pattern was always invisible. Until now." delay={0.6} /></em>
+                  </p>
+                </Reveal>
+                <SlideIn from="left" delay={0.25}>
+                  <p className="mt-8 max-w-lg text-[15px] leading-relaxed text-[var(--ink-soft)]">
+                    The answer is simple, not easy, but you already knew that. We'll take you through our
+                    four-step Business Butler process.
+                  </p>
+                </SlideIn>
+              </div>
+
+              {/* the work behind the pattern */}
+              <ScaleIn delay={0.2} className="mt-8 lg:mt-0">
+                <div
+                  className="photo-frame h-52 rounded-2xl border border-[var(--line)] sm:h-60 lg:h-72"
+                  style={{ boxShadow: "var(--shadow)" }}
+                >
+                  <motion.img
+                    src={IMG.process}
+                    alt="Two people mapping out a plan over a notebook and laptop"
+                    loading="lazy"
+                    initial={{ scale: 1.1 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.6, ease }}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </ScaleIn>
+            </div>
 
             {/* four pillars — bold typographic treatment */}
             <Reveal delay={0.35}>
@@ -592,52 +637,67 @@ export default function App() {
         {/* ═══════ 4 — CHANGE ═══════ */}
         <section id="change" className="relative overflow-hidden py-20 sm:py-28">
           <div className="blob blob-accent absolute -right-24 top-12 h-72 w-72" />
-          <div className="mx-auto max-w-2xl px-5">
+          <div className="mx-auto max-w-2xl px-5 lg:max-w-5xl">
             <Kicker n={4}>find yourself below</Kicker>
             <Reveal blur>
-              <h2 className="font-display mb-3 text-[clamp(1.8rem,8vw,3rem)] font-black leading-tight sm:mb-4">
+              <h2 className="font-display mb-3 max-w-[16ch] text-[clamp(1.8rem,8vw,3rem)] font-black leading-tight sm:mb-4">
                 Click what you need to{" "}
                 <span className="hand-underline italic text-[var(--accent)]">master:</span>
               </h2>
             </Reveal>
 
-            {/* cards — staggered, with emoji accent and visual depth */}
-            <div className="mt-8 space-y-5">
+            {/* cards — big foreground portrait, alternating sides on desktop */}
+            <div className="mt-8 space-y-6 lg:mt-12 lg:space-y-8">
               {PAIN_CARDS.map((c, i) => (
                 <SlideIn key={c.id} delay={i * 0.1} from={i % 2 === 0 ? "left" : "right"}>
                   <button
                     onClick={() => setPain(c.id)}
-                    className={`card card-tap group relative w-full overflow-hidden p-6 text-left ${pain === c.id ? "card-selected" : pain ? "opacity-40" : ""}`}
+                    className={`card card-tap group relative w-full overflow-hidden text-left ${pain === c.id ? "card-selected" : pain ? "opacity-40" : ""}`}
                     aria-pressed={pain === c.id}
                   >
-                    {/* big bg emoji */}
-                    <span className="pointer-events-none absolute -right-3 -top-2 text-[5rem] opacity-[0.06] transition-opacity group-hover:opacity-[0.12]">
-                      {c.emoji}
-                    </span>
-                    <div className="relative">
-                      <div className="mb-3 flex items-center gap-3">
-                        <span className="photo-frame h-14 w-14 shrink-0 rounded-2xl border border-[var(--line)]" style={{ boxShadow: "var(--shadow-sm)" }}>
-                          <img src={c.photo} alt={c.photoAlt} loading="lazy" className="photo-portrait h-full w-full object-cover" />
-                        </span>
-                        <div>
-                          <span className="font-display block text-xl font-bold leading-none">{c.name}</span>
-                          <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--ink-faint)]">owner · operator</span>
-                        </div>
-                        <span className="chip ml-auto px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--ink-faint)]">
+                    <div
+                      className={`flex flex-col lg:items-stretch ${
+                        i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                      }`}
+                    >
+                      {/* foreground portrait */}
+                      <div className="photo-frame relative h-52 w-full shrink-0 sm:h-64 lg:h-auto lg:min-h-[19rem] lg:w-[42%]">
+                        <img
+                          src={c.photo}
+                          alt={c.photoAlt}
+                          loading="lazy"
+                          className="photo-portrait h-full w-full object-cover"
+                        />
+                        <span className="absolute left-3 top-3 z-10 rounded-full bg-[var(--bg)]/85 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--ink-soft)] backdrop-blur-sm">
                           {c.tag}
                         </span>
                       </div>
-                      <p className="text-[14px] leading-relaxed text-[var(--ink-soft)]">{c.body}</p>
-                      {pain === c.id && (
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "auto" }}
-                          className="font-mono mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[var(--accent-ink)]"
-                        >
-                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent-ink)]" /> this is me
-                        </motion.div>
-                      )}
+
+                      {/* text column */}
+                      <div className="relative flex flex-1 flex-col justify-center p-6 lg:p-8">
+                        <span className="pointer-events-none absolute -right-3 -top-2 text-[5rem] opacity-[0.06] transition-opacity group-hover:opacity-[0.12]">
+                          {c.emoji}
+                        </span>
+                        <div className="relative">
+                          <span className="font-display block text-2xl font-bold leading-none lg:text-3xl">{c.name}</span>
+                          <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--ink-faint)]">
+                            owner · operator
+                          </span>
+                          <p className="mt-3 max-w-[52ch] text-[14px] leading-relaxed text-[var(--ink-soft)] lg:text-[15px]">
+                            {c.body}
+                          </p>
+                          {pain === c.id && (
+                            <motion.div
+                              layout
+                              initial={{ opacity: 0, width: 0 }}
+                              animate={{ opacity: 1, width: "auto" }}
+                              className="font-mono mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[var(--accent-ink)]"
+                            >
+                              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent-ink)]" /> this is me
+                            </motion.div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </button>
                 </SlideIn>
@@ -657,29 +717,35 @@ export default function App() {
               exit={{ opacity: 0, height: 0 }}
               className="relative overflow-hidden"
             >
-              <div className="mx-auto max-w-2xl px-5 py-12 sm:py-16">
+              <div className="mx-auto max-w-2xl px-5 py-12 sm:py-16 lg:max-w-4xl">
                 <motion.div
                   key={pain}
                   initial={{ opacity: 0, x: -40, filter: "blur(8px)" }}
                   animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                   transition={{ duration: 0.8, ease }}
-                  className="relative rounded-2xl border-l-4 border-[var(--accent)] bg-[var(--accent-soft)] p-6 sm:p-8"
+                  className="relative overflow-hidden rounded-2xl border-l-4 border-[var(--accent)] bg-[var(--accent-soft)]"
                   style={{ boxShadow: "var(--shadow)" }}
                 >
                   <span className="big-number -right-2 -top-6 text-[var(--accent)]" style={{ opacity: 0.06 }}>!</span>
-                  <div className="relative flex items-start gap-4 sm:gap-5">
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.6, rotate: -6 }}
-                      animate={{ opacity: 1, scale: 1, rotate: -3 }}
-                      transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 16 }}
-                      className="photo-frame mt-1 hidden h-20 w-20 shrink-0 rounded-2xl border-2 border-[var(--bg-raised)] sm:block"
-                      style={{ boxShadow: "var(--shadow)" }}
+                  <div className="relative flex flex-col sm:flex-row sm:items-stretch">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.25, duration: 0.7, ease }}
+                      className="photo-frame relative h-48 w-full shrink-0 sm:h-auto sm:w-44 lg:w-64"
                     >
-                      <img src={painCard?.photo} alt={painCard?.photoAlt} loading="lazy" className="photo-grade h-full w-full object-cover" />
-                    </motion.span>
-                    <p className="font-display text-xl leading-relaxed sm:text-2xl">
-                      <WordReveal text={ACKNOWLEDGE[pain]} />
-                    </p>
+                      <img
+                        src={painCard?.photo}
+                        alt={painCard?.photoAlt}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    </motion.div>
+                    <div className="flex flex-1 items-center p-6 sm:p-8">
+                      <p className="font-display max-w-[46ch] text-xl leading-relaxed sm:text-2xl">
+                        <WordReveal text={ACKNOWLEDGE[pain]} />
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               </div>
@@ -693,14 +759,14 @@ export default function App() {
           <WaveDivider flip color="var(--bg)" />
           <div className="pointer-events-none absolute inset-0" style={{ background: "var(--section-glow)" }} />
 
-          <div className="relative mx-auto max-w-2xl px-5">
+          <div className="relative mx-auto max-w-2xl px-5 lg:max-w-5xl">
             <Kicker n={6}>the four steps{pain ? " — ordered for you" : ""}</Kicker>
             <Reveal blur>
               <h2 className="font-display mb-10 text-[clamp(1.8rem,8vw,3rem)] font-black leading-tight">
                 The Butler <span className="hand-underline italic text-[var(--accent)]">process.</span>
               </h2>
             </Reveal>
-            <div className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-7">
               <AnimatePresence mode="popLayout">
                 {stepOrder.map((title, i) => (
                   <motion.div
@@ -744,31 +810,73 @@ export default function App() {
                 ))}
               </AnimatePresence>
             </div>
+
+            {/* the payoff — what four steps actually buy you */}
+            <ScaleIn delay={0.15}>
+              <div
+                className="photo-frame relative mt-8 h-56 rounded-2xl border border-[var(--line)] sm:h-64 lg:mt-10 lg:h-80"
+                style={{ boxShadow: "var(--shadow)" }}
+              >
+                <motion.img
+                  src={IMG.moreLife}
+                  alt="Business owners on a hilltop at golden hour, arms raised"
+                  loading="lazy"
+                  initial={{ scale: 1.14 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.8, ease }}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
+                  <p className="font-display max-w-[24ch] text-xl font-bold leading-tight text-white drop-shadow-lg sm:text-2xl lg:text-3xl">
+                    Same hours. More life.
+                  </p>
+                  <p className="mt-1 max-w-[42ch] text-[13px] text-white/85 drop-shadow-md">
+                    That's not a slogan — it's what the four steps add up to.
+                  </p>
+                </div>
+              </div>
+            </ScaleIn>
           </div>
         </section>
 
         {/* ═══════ 7 — PERSONALIZE (placeholder) ═══════ */}
         <section id="personalize" className="py-12 sm:py-16">
-          <div className="mx-auto max-w-2xl px-5">
+          <div className="mx-auto max-w-2xl px-5 lg:max-w-4xl">
             <ScaleIn>
-              <div className="card relative flex items-center gap-5 overflow-hidden border-dashed p-6" style={{ boxShadow: "var(--shadow-sm)" }}>
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                  className="photo-frame relative h-16 w-16 shrink-0 rounded-full border-2 border-[var(--accent)]"
-                  style={{ boxShadow: "var(--shadow)" }}
-                >
-                  <img src={IMG.butler} alt="Your Butler" loading="lazy" className="photo-grade h-full w-full rounded-full object-cover" />
-                  <span className="absolute -bottom-1 -right-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent)] text-[10px] text-[var(--accent-ink)]">▶</span>
-                </motion.div>
-                <div>
-                  <p className="font-display text-lg font-bold">
+              <div
+                className="card relative flex flex-col overflow-hidden border-dashed sm:flex-row sm:items-stretch"
+                style={{ boxShadow: "var(--shadow-sm)" }}
+              >
+                {/* foreground butler portrait */}
+                <div className="photo-frame relative h-56 w-full shrink-0 sm:h-auto sm:w-56 lg:w-72">
+                  <img
+                    src={IMG.butler}
+                    alt="Your Butler"
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.2 }}
+                    className="pulse-ring absolute left-1/2 top-1/2 z-10 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--accent)] text-lg text-[var(--accent-ink)]"
+                  >
+                    ▶
+                  </motion.span>
+                </div>
+
+                <div className="flex flex-1 flex-col justify-center p-6 lg:p-8">
+                  <p className="font-display text-xl font-bold lg:text-2xl">
                     A word from a Butler{" "}
-                    <span className="ml-1 inline-block rounded-full bg-[var(--tan-soft)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--tan)]">coming soon</span>
+                    <span className="ml-1 inline-block rounded-full bg-[var(--tan-soft)] px-2.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wider text-[var(--tan)]">
+                      coming soon
+                    </span>
                   </p>
-                  <p className="mt-1 text-[13px] text-[var(--ink-soft)]">60-second audio walkthrough tailored to what you tapped above.</p>
+                  <p className="mt-2 max-w-[46ch] text-[14px] leading-relaxed text-[var(--ink-soft)]">
+                    60-second audio walkthrough tailored to what you tapped above.
+                  </p>
                 </div>
               </div>
             </ScaleIn>
@@ -782,7 +890,7 @@ export default function App() {
           <div className="blob blob-accent absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2" />
           <div className="pointer-events-none absolute inset-0" style={{ background: "var(--section-glow)" }} />
 
-          <div className="relative mx-auto max-w-2xl px-5">
+          <div className="relative mx-auto max-w-2xl px-5 lg:max-w-4xl">
             <Kicker n={8}>90 seconds · zero typing</Kicker>
             <Reveal blur>
               <h2 className="font-display mb-2 text-[clamp(1.8rem,8vw,3rem)] font-black leading-tight">
@@ -956,7 +1064,7 @@ export default function App() {
           <div className="blob blob-accent absolute left-1/2 top-8 h-80 w-80 -translate-x-1/2" />
           <div className="blob blob-tan absolute -right-16 bottom-0 h-64 w-64" />
 
-          <div className="relative mx-auto max-w-2xl px-5">
+          <div className="relative mx-auto max-w-2xl px-5 lg:max-w-5xl">
             <Kicker n={9}>your move</Kicker>
             <Reveal blur>
               <h2 className="font-display mb-3 text-[clamp(2rem,9vw,3.5rem)] font-black leading-tight">
@@ -965,33 +1073,39 @@ export default function App() {
               </h2>
             </Reveal>
 
-            {/* the lean team — real people, not a queue */}
-            <ScaleIn delay={0.1}>
-              <div className="photo-frame mb-6 h-36 rounded-2xl border border-[var(--line)] sm:h-44" style={{ boxShadow: "var(--shadow)" }}>
-                <motion.img
-                  src={IMG.team}
-                  alt="The Butlers team working side by side in a kitchen"
-                  loading="lazy"
-                  initial={{ scale: 1.12 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.6, ease }}
-                  className="photo-grade h-full w-full object-cover"
-                />
-                <span className="font-mono absolute bottom-2.5 left-3 z-10 rounded-full bg-[var(--bg)]/85 px-3 py-1 text-[9px] uppercase tracking-[0.2em] text-[var(--ink-soft)] backdrop-blur-sm">
-                  the actual humans behind your butler
-                </span>
+            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-12">
+              {/* the lean team — real people, not a queue */}
+              <div className="lg:sticky lg:top-28">
+                <ScaleIn delay={0.1}>
+                  <div
+                    className="photo-frame mb-6 h-40 rounded-2xl border border-[var(--line)] sm:h-52 lg:h-80"
+                    style={{ boxShadow: "var(--shadow)" }}
+                  >
+                    <motion.img
+                      src={IMG.team}
+                      alt="The Butlers team working side by side in a kitchen"
+                      loading="lazy"
+                      initial={{ scale: 1.12 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.6, ease }}
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="font-mono absolute bottom-2.5 left-3 z-10 rounded-full bg-[var(--bg)]/85 px-3 py-1 text-[9px] uppercase tracking-[0.2em] text-[var(--ink-soft)] backdrop-blur-sm">
+                      the actual humans behind your butler
+                    </span>
+                  </div>
+                </ScaleIn>
+
+                <Reveal delay={0.15}>
+                  <p className="mb-10 max-w-md text-[15px] text-[var(--ink-soft)] lg:mb-0">
+                    We're a lean team on purpose — every client gets a Butler, not a queue.{" "}
+                    <strong className="text-[var(--ink)]">Limited slots this week.</strong>
+                  </p>
+                </Reveal>
               </div>
-            </ScaleIn>
 
-            <Reveal delay={0.15}>
-              <p className="mb-10 max-w-md text-[15px] text-[var(--ink-soft)]">
-                We're a lean team on purpose — every client gets a Butler, not a queue.{" "}
-                <strong className="text-[var(--ink)]">Limited slots this week.</strong>
-              </p>
-            </Reveal>
-
-            <div className="space-y-5">
+              <div className="space-y-5">
               <ScaleIn>
                 <button
                   type="button"
@@ -1034,6 +1148,7 @@ export default function App() {
                   <EmailCapture prompt="Not today? Take the four-step breakdown with you." profile={profile} source="cta-four-step-breakdown" />
                 </div>
               </ScaleIn>
+              </div>
             </div>
 
             {/* footer mark */}
