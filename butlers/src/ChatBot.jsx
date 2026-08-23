@@ -239,6 +239,15 @@ export default function ChatBot({ profile }) {
     for (const section of sections) observer.observe(section);
 
     const fired = new Set();
+    // The persona cards ("Click what you need to master") are the point where
+    // a visitor who isn't clicking has still told us something. Scrolling
+    // past that section — not #qualify further down — is what opens Ian.
+    const autoOpenSection = document.getElementById("change");
+    const maybeAutoOpen = () => {
+      if (autoOpenSection && autoOpenSection.getBoundingClientRect().bottom <= 0 && beginConversation("auto")) {
+        setOpen(true);
+      }
+    };
     const onScroll = () => {
       if (scrollY > 0) setHasScrolled(true);
 
@@ -251,11 +260,11 @@ export default function ChatBot({ profile }) {
         }
       }
 
-      const qualifySection = document.getElementById("qualify");
-      if (qualifySection?.getBoundingClientRect().bottom <= 0 && beginConversation("auto")) {
-        setOpen(true);
-      }
+      maybeAutoOpen();
     };
+    // A page that restores an already-scrolled position (reload mid-read)
+    // never fires a scroll event, so check once on mount too.
+    maybeAutoOpen();
     addEventListener("scroll", onScroll, { passive: true });
     return () => {
       observer.disconnect();
