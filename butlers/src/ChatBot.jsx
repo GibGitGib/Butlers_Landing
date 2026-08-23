@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getBackendBase, getSessionId, getWebSocketUrl, sanitizeProfile } from "./butlerClient.js";
 
 const SNAPSHOT_KEY = "bb-chat-snapshot-v2";
+const TOKEN_KEY = "bb-chat-token-v1";
 const AUTO_OPENED_KEY = "bb-chat-auto-opened-v2";
 const PROTOCOL_VERSION = 1;
 
@@ -42,6 +43,14 @@ function readSnapshot() {
   } catch {
     return null;
   }
+}
+
+function readToken() {
+  return sessionStorage.getItem(TOKEN_KEY) || null;
+}
+
+function writeToken(token) {
+  if (token) sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 function eventEnvelope(sessionId, eventName, section, metadata = {}) {
@@ -124,14 +133,19 @@ export default function ChatBot({ profile }) {
           protocolVersion: PROTOCOL_VERSION,
           type: "session.resume",
           sessionId,
-          payload: { snapshot: readSnapshot() ?? undefined, profile: profileRef.current },
+          // The snapshot is only a hint now — the server restores its own
+          // copy when the token proves this tab owns the session.
+          payload: { snapshot: readSnapshot() ?? undefined, profile: profileRef.current, token: readToken() ?? undefined },
         }));
         for (const item of queueRef.current.splice(0)) ws.send(JSON.stringify(item));
       });
       ws.addEventListener("message", (event) => {
         try {
           const envelope = JSON.parse(event.data);
-          if (envelope.type === "session.ready") persistSnapshot(envelope.payload.snapshot);
+          if (envelope.type === "session.ready") {
+            persistSnapshot(envelope.payload.snapshot);
+            writeToken(envelope.payload.resumeToken);
+          }
           if (envelope.type === "chat.message.delta") {
             // Progressive text only. The authoritative message, with its
             // options and input, still arrives as chat.message.sent.
