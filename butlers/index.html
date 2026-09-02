@@ -18,5 +18,14 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- The chat is served by the bot hub; this page only points at it. -->
+    <script
+      src="https://business-butlers-dascb.vercel.app/widget.js"
+      data-site="butlers"
+      data-auto-open="#change"
+      data-title="Ian, your Butler"
+      data-fallback-href="/intake-form.html"
+      defer
+    ></script>
   </body>
 </html>
