@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform, useInView } from "framer-motion";
 import Diagnosis from "./Diagnosis.jsx";
-import ChatBot from "./ChatBot.jsx";
 import { submitLead } from "./butlerClient.js";
 import "./App.css";
 
@@ -332,7 +331,18 @@ export default function App() {
   const [audit, setAudit] = useState({});
   const [skipped, setSkipped] = useState(false);
 
-  const profile = { pain, engine, visibility, vertical, audit };
+  // Memoized so the widget's profile effect only fires when the persona
+  // actually changes, not on every render of this component.
+  const profile = useMemo(() => ({ pain, engine, visibility, vertical, audit }), [pain, engine, visibility, vertical, audit]);
+
+  // The chat is the hub-served widget (widget.js); persona taps flow into it
+  // through its global API. Before the widget script has loaded, stash on a
+  // well-known global — the widget picks it up on mount.
+  useEffect(() => {
+    if (window.Butler?.setProfile) window.Butler.setProfile(profile);
+    else window.__BUTLER_PROFILE__ = profile;
+  }, [profile]);
+
   const stepOrder = STEP_ORDER[pain] ?? STEP_ORDER.default;
   const painCard = PAIN_CARDS.find((c) => c.id === pain);
 
@@ -1167,8 +1177,6 @@ export default function App() {
           </div>
         </section>
       </main>
-
-      <ChatBot profile={profile} />
     </div>
   );
 }
